@@ -8,4 +8,11 @@ $(document).ready(function(){
 		$('.list-container').removeClass('hide');
 	});
 
+	FbApi.getTodos().then(()=>{
+		FbApi.writeDom();
+	})
+	.catch((error)=>{
+		console.log("getTodos Error", error);
+	});
+
 });
