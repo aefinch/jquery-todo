@@ -1,18 +1,17 @@
 var FbApi = ((oldCrap) => {
 
-	oldCrap.getTodos = () => {
+	oldCrap.getTodos = (apiKeys) => {
 		let items = [];
-		return new Promise((resolve, reject) => {
-			$.ajax('./database/seed.json')
+		return new Promise ((resolve, reject) => {
+			$.ajax(`${apiKeys.databaseURL}/items.json`)
 			.done((data) => {
-				let response = data.items;
-				Object.keys(response).forEach((key)=>{
+				let response = data;
+				Object.keys(response).forEach((key) => {
 					console.log("key", key);
 					response[key].id = key;
 					items.push(response[key]);
 				});
-				FbApi.setTodos(items);
-				resolve();
+				resolve(items);
 			})
 			.fail((error) => {
 				reject(error);
@@ -20,34 +19,60 @@ var FbApi = ((oldCrap) => {
 		});
 	};
 
-	oldCrap.addTodo = (newTodo) => {
-		return new Promise ((resolve, reject)=>{
-			newTodo.id = `item${FbApi.todoGetter().length}`;
-			console.log("newTodo", newTodo);
-			FbApi.setSingleTodo(newTodo);
-			resolve();
-		});
-	};
-
-	oldCrap.checker = (id) => {
-		return new Promise ((resolve, reject) =>{
-			FbApi.setChecked(id);
-			resolve();			
-		});
-	};
-
-	oldCrap.deleteTodo = (id) => {
+	oldCrap.addTodo = (apiKeys, newTodo) => {
 		return new Promise ((resolve, reject) => {
-			FbApi.duhlete(id);
-			resolve();
+			$.ajax({
+				method: 'POST',
+				url:`${apiKeys.databaseURL}/items.json`,
+				data: JSON.stringify(newTodo)
+			}).done(() => {
+				resolve();
+			}).fail((error) => {
+				reject(error);
+			});
 		});
 	};
 
-	oldCrap.editTodo = (id) => {
+
+
+
+	oldCrap.deleteTodo = (apiKeys, id) => {
 		return new Promise ((resolve, reject) => {
-			FbApi.duhlete(id);
-			resolve();
+			$.ajax({
+				method: 'DELETE',
+				url:`${apiKeys.databaseURL}/items/${id}.json`
+			}).done(() => {
+				resolve();
+			}).fail((error) => {
+				reject(error);
+			});
 		});
 	};
+	
+	oldCrap.editTodo = (apiKeys, editTodo, id) => {
+		return new Promise ((resolve, reject) => {
+			$.ajax({
+				method: 'PUT',
+				url:`${apiKeys.databaseURL}/items/${id}.json`,
+				data: JSON.stringify(editTodo)
+			}).done(() => {
+				resolve();
+			}).fail((error) => {
+				reject(error);
+			});
+		});
+	};
+
+
+
+
+
+
+
+
+
+
+
+
 	return oldCrap;
 })(FbApi || {});
