@@ -5,7 +5,18 @@ var FbApi = ((cats) => {
 			.then((authData) => {
 				resolve(authData);
 			}).catch((error) => {
-				console.log("error in submitting user data", error);
+				reject(error);
+			});
+		});
+	};
+
+	cats.loginUser = (creds) => {
+		return new Promise((resolve, reject) => {
+			firebase.auth().signInWithEmailAndPassword(creds.email, creds.password)
+			.then((authData) => {
+				resolve(authData);
+			}).catch((error)=> {
+				reject(error);
 			});
 		});
 	};

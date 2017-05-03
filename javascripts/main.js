@@ -33,6 +33,28 @@ $(document).ready(function(){
     });
   });
 
+  let clearLogin = () => {
+    $("#inputEmail").val("");
+    $("#inputPassword").val("");
+    $("#inputUsername").val("");
+  };
+
+
+  $('#loginButton').click(() => {
+    let email = $("#inputEmail").val();
+    let password = $("#inputPassword").val();
+
+    let user = {email, password};
+    FbApi.loginUser(user).then((response) => {
+      clearLogin();
+      $("#login-container").addClass("hide");
+      $(".main-container").removeClass("hide");
+      FbApi.writeDom(apiKeys);
+    }).catch((error) => {
+      console.log("login error", error);
+    });
+  });
+
   FbApi.firebaseCredentials().then((keys) => {
     apiKeys = keys;
     firebase.initializeApp(apiKeys);
