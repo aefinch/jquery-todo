@@ -12,8 +12,19 @@ $(document).ready(function(){
 		$('.list-container').removeClass('hide');
 	});
 
+  $('#registerButton').click(() => {
+    let email = $("#inputEmail").val();
+    let password = $("#inputPassword").val();
+    let username = $("#inputUsername").val();
+    let user = {email, password};
+    FbApi.registerUser(user).then((response) => {
+      console.log("registr response", response);
+    }).catch((error) => {
+      console.log("error in registerUser", error);
+    });
+  });
+
   FbApi.firebaseCredentials().then((keys) => {
-  	console.log("hello?");
     apiKeys = keys;
     firebase.initializeApp(apiKeys);
     FbApi.writeDom(apiKeys);
