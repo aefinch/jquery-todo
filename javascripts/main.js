@@ -24,7 +24,14 @@ $(document).ready(function(){
         username: username
       };
       FbApi.addUser(apiKeys, newUser).then((response) => {
-        console.log("addUser", response);
+        FbApi.loginUser(user).then((response) => {
+          clearLogin();
+          $("#login-container").addClass("hide");
+          $(".main-container").removeClass("hide");
+          FbApi.writeDom(apiKeys);
+        }).catch((error) => {
+          console.log("login error", error);
+        });
       }).catch((error) => {
         console.log("error in addUser", error);
       });
@@ -49,16 +56,23 @@ $(document).ready(function(){
       clearLogin();
       $("#login-container").addClass("hide");
       $(".main-container").removeClass("hide");
+      FbApi.createLogoutButton(apiKeys);
       FbApi.writeDom(apiKeys);
     }).catch((error) => {
       console.log("login error", error);
     });
   });
-
+  $("#logout-container").on("click", "#logoutButton", () => {
+    clearLogin();
+     $("#login-container").removeClass("hide");
+    $(".main-container").addClass("hide");
+    FbApi.writeDom(apiKeys);
+    FbApi.logoutUser();
+  });
   FbApi.firebaseCredentials().then((keys) => {
     apiKeys = keys;
     firebase.initializeApp(apiKeys);
-    FbApi.writeDom(apiKeys);
+
   }).catch((error) => {
     console.log("key errors", error);
   });
@@ -121,6 +135,7 @@ $(document).ready(function(){
   		isCompleted: event.target.checked,
   		task: $(event.target).siblings(".task").html()
   	};
+    console.log(myTodo);
   	FbApi.editTodo(apiKeys, myTodo, event.target.id).then(() =>{
   		FbApi.writeDom(apiKeys);
   	}).catch((error) => {

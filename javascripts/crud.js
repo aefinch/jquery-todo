@@ -3,7 +3,8 @@ var FbApi = ((oldCrap) => {
 	oldCrap.getTodos = (apiKeys) => {
 		let items = [];
 		return new Promise ((resolve, reject) => {
-			$.ajax(`${apiKeys.databaseURL}/items.json`)
+			let uid = FbApi.credentialsCurrentUser().uid;
+			$.ajax(`${apiKeys.databaseURL}/items.json?orderBy="uid"&equalTo="${uid}"`)
 			.done((data) => {
 				let response = data;
 				Object.keys(response).forEach((key) => {
